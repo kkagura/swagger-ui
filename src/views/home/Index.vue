@@ -4,11 +4,17 @@
       <el-header>Header</el-header>
       <el-container>
         <el-aside width="256px">
+          <div class="tree-search">
+            <el-input
+              v-model="rawSearchKey"
+              placeholder="请输入接口路径或名称"
+            ></el-input>
+          </div>
           <el-menu @select="onSelect">
             <el-sub-menu
               :index="group.name"
               :key="group.name"
-              v-for="group in menus"
+              v-for="group in filteredMenus"
             >
               <template #title>
                 <span>
@@ -31,19 +37,23 @@
           </el-menu>
         </el-aside>
         <el-main>
-          <request-panel :path="requestPath" :swagger-request="swaggerRequest"></request-panel>
+          <request-panel
+            :path="requestPath"
+            :swagger-request="swaggerRequest"
+          ></request-panel>
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <script lang="ts" setup>
-import { provide, ref } from "vue";
+import { computed, provide, ref, watch } from "vue";
 import Swagger, { RequestMenu, SwaggerRequest, TagGroupItem } from ".";
 import { fetchSwagger } from "../../api";
-import { createMenus, splitPathId } from "./utils";
+import { createMenus, splitPathId, filterMenu } from "./utils";
 import { swaggerBaseUrlKey } from "./token";
 import RequestPanel from "./components/RequestPanel.vue";
+import { useDebounceFn } from "@vueuse/core";
 
 // store
 const baseURL = ref("");
@@ -66,11 +76,22 @@ const onSelect = (index: string, indexPath: string[], item: RequestMenu) => {
     requestPath.value = path;
   }
 };
+
+const rawSearchKey = ref("");
+const searchKey = ref("");
+const syncSearchKey = useDebounceFn(() => {
+  searchKey.value = rawSearchKey.value;
+  console.log(searchKey.value);
+}, 200);
+watch(() => rawSearchKey.value, syncSearchKey);
+
+const filteredMenus = computed(() => filterMenu(menus.value, searchKey.value));
 </script>
 <style scoped lang="less">
 .page-layout {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
   :deep(.el-menu-item) {
     .path-method {
       width: 52px;

@@ -43,3 +43,21 @@ export function joinPathId(path: string, method: string) {
 export function splitPathId(key: string): [string, keyof SwaggerPath] {
   return key.split(ID_KEY) as [string, keyof SwaggerPath];
 }
+
+export function filterMenu(menu: TagGroupItem[], key: string): TagGroupItem[] {
+  if (!key) {
+    return menu;
+  }
+  const result: TagGroupItem[] = [];
+  menu.forEach((item) => {
+    if (item.name.includes(key)) {
+      result.push(item);
+    } else {
+      const { children } = item;
+      if (children.some((child) => child.name.includes(key) || child.path.includes(key))) {
+        result.push(item);
+      }
+    }
+  });
+  return result;
+}
