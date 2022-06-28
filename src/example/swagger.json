@@ -2901,7 +2901,7 @@
           "管理后台-账号管理"
         ],
         "summary": "查询用户列表",
-        "operationId": "listUsingPOST_6",
+        "operationId": "listUsingPOST_5",
         "consumes": [
           "application/json"
         ],
@@ -5223,7 +5223,7 @@
           "管理后台-开放平台"
         ],
         "summary": "查询用户列表",
-        "operationId": "listUsingPOST_5",
+        "operationId": "listUsingPOST_6",
         "consumes": [
           "application/json"
         ],
@@ -9031,6 +9031,10 @@
         "payUnit": {
           "type": "string",
           "description": "付费单位"
+        },
+        "payUnitText": {
+          "type": "string",
+          "description": "付费单位文本"
         },
         "result": {
           "type": "string",

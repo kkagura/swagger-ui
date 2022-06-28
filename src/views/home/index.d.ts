@@ -41,10 +41,7 @@ export interface SwaggerRequest {
   summary: string;
   description?: string;
   operationId: string;
-  responses: {
-    200: Response;
-    default: Response;
-  };
+  responses: Record<string, Response>;
   parameters: Array<Parameter>;
   tags: string[];
 }
@@ -69,6 +66,21 @@ export interface TagGroupItem {
   children: PathItem[];
 }
 
+export interface ParamRow {
+  name: string;
+  description: string;
+  requestType?: string;
+  required?: boolean;
+  dataType: string;
+  schemaType?: string;
+  children?: ParamRow[];
+}
+
+export interface ResponeseStatusRow {
+  status: string;
+  description: string;
+  schemaType: string;
+}
 export default interface Swagger {
   swagger: "2.0" | "3.0";
   basePath?: string;

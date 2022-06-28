@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+    <slot></slot>
+  </div>
 </template>
 <script lang="ts" setup>
 import { provide, reactive, toRefs } from "vue";
@@ -8,7 +10,7 @@ import { detailContextKey } from "../tokens";
 const props = defineProps({
   labelWidth: {
     type: String,
-    default: "160px",
+    default: "80px",
   },
   inline: {
     type: Boolean,
