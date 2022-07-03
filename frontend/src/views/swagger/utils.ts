@@ -102,6 +102,11 @@ export function createResponseParamsData(
   return data;
 }
 
+export function createRequestParamsData(
+  requestData: SwaggerRequest,
+  swagger: Swagger
+) {}
+
 export function expandSchema(
   schema: ObjectScheme,
   swagger: Swagger,

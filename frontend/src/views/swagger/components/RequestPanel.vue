@@ -17,24 +17,37 @@
           </el-table>
         </detail-item>
         <detail-item title="响应参数" :inline="false">
-          <el-table border default-expand-all row-key="name" :data="responseParamsData">
+          <el-table
+            border
+            default-expand-all
+            row-key="name"
+            :data="responseParamsData"
+          >
             <el-table-column label="参数名称" prop="name"></el-table-column>
-            <el-table-column label="参数说明" prop="description"></el-table-column>
+            <el-table-column
+              label="参数说明"
+              prop="description"
+            ></el-table-column>
             <el-table-column label="类型" prop="dataType"></el-table-column>
             <el-table-column label="schema" prop="schemaType"></el-table-column>
           </el-table>
+        </detail-item>
+        <detail-item title="返回值类型定义">
+          <preview-code :code="resDef"></preview-code>
         </detail-item>
       </detail>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, inject, PropType, toRefs } from "vue";
+import { computed, inject, PropType, toRefs, ref, watch } from "vue";
 import { SwaggerRequest } from "..";
 import DetailItem from "../../../components/DetailItem.vue";
 import Detail from "../../../components/Detail.vue";
 import { swaggerContextKey } from "../token";
 import { createResponseStatusData, createResponseParamsData } from "../utils";
+import PreviewCode from "./PreviewCode.vue";
+import { generate } from "../swagger/generator";
 
 const props = defineProps({
   swaggerRequest: {
@@ -62,6 +75,19 @@ const responseParamsData = computed(() =>
     ? createResponseParamsData(swaggerRequest.value, swagger?.value)
     : []
 );
+const resDef = ref("");
+const reqDef = ref("");
+watch([() => path.value, () => method.value], () => {
+  if (swagger?.value) {
+    const result = generate(
+      JSON.parse(JSON.stringify(swagger.value)),
+      path.value,
+      method.value as any
+    );
+    reqDef.value = result.reqParams;
+    resDef.value = result.resParams;
+  }
+});
 </script>
 <style lang="less" scoped>
 .request-panel {

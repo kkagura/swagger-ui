@@ -21,6 +21,7 @@ export interface ObjectScheme {
   };
   items?: ObjectScheme;
   $ref?: string;
+  additionalProperties?: ObjectScheme;
 }
 export type Parameter = {
   name: string;

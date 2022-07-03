@@ -1,0 +1,15 @@
+{
+  "api": {
+    "prefix": "api",
+    "version": "v1"
+  },
+  "db": {
+    "host": "localhost",
+    "user": "root",
+    "password": "Wj531096404",
+    "database": "swagger_ui",
+    "showSql": false,
+    "isSync": true,
+    "isForce": false
+  }
+}

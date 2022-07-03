@@ -55,6 +55,9 @@ import { createMenus, splitPathId, filterMenu } from "./utils";
 import { swaggerContextKey } from "./token";
 import RequestPanel from "./components/RequestPanel.vue";
 import { useDebounceFn } from "@vueuse/core";
+import { getSwaggerDoc } from "../../api/swagger";
+import { useRoute } from "vue-router";
+const route = useRoute();
 
 // store
 const swagger = ref<Swagger>();
@@ -66,10 +69,6 @@ const currentSelectContext = reactive<{
   path?: string;
   method?: string;
 }>({});
-fetchSwagger("").then((data) => {
-  swagger.value = data;
-  menus.value = createMenus(data);
-});
 
 const onSelect = (index: string, indexPath: string[], item: RequestMenu) => {
   const [path, method] = splitPathId(index);
@@ -90,6 +89,14 @@ const syncSearchKey = useDebounceFn(() => {
 watch(() => rawSearchKey.value, syncSearchKey);
 
 const filteredMenus = computed(() => filterMenu(menus.value, searchKey.value));
+
+const fetch = () => {
+  getSwaggerDoc(route.params.id as string).then((data) => {
+    swagger.value = data;
+    menus.value = createMenus(data);
+  });
+};
+fetch();
 </script>
 <style scoped lang="less">
 .page-layout {
@@ -98,6 +105,10 @@ const filteredMenus = computed(() => filterMenu(menus.value, searchKey.value));
   overflow: hidden;
   .el-main {
     height: calc(100vh - 60px);
+  }
+  .el-aside {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
   }
   :deep(.el-menu-item) {
     .path-method {
