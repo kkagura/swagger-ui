@@ -32,7 +32,26 @@
             <el-table-column label="schema" prop="schemaType"></el-table-column>
           </el-table>
         </detail-item>
+        <detail-item title="参数值类型定义">
+          <template #title>
+            <div class="flex-title">
+              <p>参数值类型定义</p>
+              <el-button @click="handleCopyReq" type="primary">
+                复制
+              </el-button>
+            </div>
+          </template>
+          <preview-code :code="reqDef"></preview-code>
+        </detail-item>
         <detail-item title="返回值类型定义">
+          <template #title>
+            <div class="flex-title">
+              <p>返回值类型定义</p>
+              <el-button @click="handleCopyRes" type="primary">
+                复制
+              </el-button>
+            </div>
+          </template>
           <preview-code :code="resDef"></preview-code>
         </detail-item>
       </detail>
@@ -48,6 +67,8 @@ import { swaggerContextKey } from "../token";
 import { createResponseStatusData, createResponseParamsData } from "../utils";
 import PreviewCode from "./PreviewCode.vue";
 import { generate } from "../swagger/generator";
+import { useClipboard } from "@vueuse/core";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   swaggerRequest: {
@@ -88,6 +109,18 @@ watch([() => path.value, () => method.value], () => {
     resDef.value = result.resParams;
   }
 });
+const { copy: copyRes } = useClipboard({ source: resDef });
+const handleCopyRes = () => {
+  copyRes().then(() => {
+    ElMessage.success("复制成功");
+  });
+};
+const { copy: copyReq } = useClipboard({ source: reqDef });
+const handleCopyReq = () => {
+  copyReq().then(() => {
+    ElMessage.success("复制成功");
+  });
+};
 </script>
 <style lang="less" scoped>
 .request-panel {
@@ -99,6 +132,11 @@ watch([() => path.value, () => method.value], () => {
   .panel-content {
     code {
       color: #ab0f3a;
+    }
+    .flex-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

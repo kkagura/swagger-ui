@@ -1,3 +1,4 @@
+const { request } = require("../utils");
 const BaseService = require("./BaseService");
 
 class SwaggerService extends BaseService {
@@ -10,8 +11,13 @@ class SwaggerService extends BaseService {
       };
     }
     const { path } = record;
-    //  fetch(path)
-    return require("../config/swaggerTest.json");
+    return request(path).catch(
+      () =>
+        new Error({
+          code: 1,
+          message: "请求失败",
+        })
+    );
   }
 }
 

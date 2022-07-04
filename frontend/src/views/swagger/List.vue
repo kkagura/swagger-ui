@@ -6,8 +6,8 @@
   </div>
   <el-table border :data="tableData.records">
     <el-table-column prop="name" label="文档名"></el-table-column>
-    <el-table-column prop="name" label="文档源"></el-table-column>
-    <el-table-column prop="name" label="标签"></el-table-column>
+    <el-table-column prop="path" label="文档源"></el-table-column>
+    <el-table-column prop="tag" label="标签"></el-table-column>
     <el-table-column label="操作">
       <template #default="{ row }">
         <a
