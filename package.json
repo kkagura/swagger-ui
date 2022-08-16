@@ -1,0 +1,20 @@
+{
+  "name": "swagger-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd ./backend && node app",
+    "frontend": "cd ./frontend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkagura/swagger-ui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kkagura/swagger-ui/issues"
+  },
+  "homepage": "https://github.com/kkagura/swagger-ui#readme"
+}
