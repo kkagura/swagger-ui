@@ -12,6 +12,7 @@ export interface SwaggerRecord {
   name: string;
   path: string;
   tag: string;
+  groupId: string;
 }
 
 export function fetchSwaggerList() {

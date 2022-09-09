@@ -19,6 +19,9 @@ class BaseService {
   getList(params) {
     return this.orm.extend.getList(params);
   }
+  findAll(params) {
+    return this.orm.findAll({ where: params });
+  }
   add(params) {
     if (!params.id) {
       params.id = uuid.v4();

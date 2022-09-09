@@ -14,12 +14,30 @@ exports.attributes = {
     allowNull: false,
     unique: true,
   },
+  name2: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  name3: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   path: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
   },
   tag: {
+    type: DataTypes.STRING,
+  },
+  groupId: {
+    type: DataTypes.STRING,
+    field: "group_id",
+  },
+  creator: {
+    type: DataTypes.STRING,
+  },
+  updater: {
     type: DataTypes.STRING,
   },
 };

@@ -1,5 +1,5 @@
 const compose = require("koa-compose");
-const routers = [require("./SwaggerRouter")];
+const routers = [require("./SwaggerRouter"), require("./SwaggerGroupRouter")];
 module.exports = function router() {
   const rs = [];
   routers.forEach(({ router }) =>

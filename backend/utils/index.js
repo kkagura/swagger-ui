@@ -6,7 +6,7 @@ exports.request = function fetch(url) {
       try {
         return JSON.parse(text);
       } catch (error) {
-        return Promise.reject(new Error("不合法的JSON文件"));
+        return Promise.reject(error);
       }
     });
   });

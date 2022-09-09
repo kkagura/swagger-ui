@@ -49,11 +49,19 @@ module.exports = class BaseRouter {
       ctx.success(res);
     };
   }
+  findAll(service) {
+    return async (ctx, next) => {
+      console.log("xxxx");
+      const res = await service.findAll(ctx.request.body);
+      ctx.success(res);
+    };
+  }
   registerDefaults() {
     this.register("/get", "post", this.get);
     this.register("/list", "post", this.list);
     this.register("/add", "post", this.add);
     this.register("/update", "post", this.update);
     this.register("/delete", "post", this.delete);
+    this.register("/findAll", "post", this.findAll);
   }
 };
