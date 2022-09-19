@@ -20,19 +20,45 @@
               :data="requestParamsData"
             >
               <el-table-column label="参数名称" prop="name"></el-table-column>
+              <el-table-column label="参数类型" prop="where"></el-table-column>
               <el-table-column
                 label="参数说明"
                 prop="description"
               ></el-table-column>
-              <el-table-column label="类型" prop="dataType"></el-table-column>
+              <el-table-column
+                label="数据类型"
+                prop="dataType"
+              ></el-table-column>
               <el-table-column
                 label="schema"
                 prop="schemaType"
               ></el-table-column>
             </el-table>
           </detail-item>
+          <detail-item title="请求参数类型定义">
+            <template #title>
+              <div class="flex-title">
+                <p>请求参数类型定义</p>
+                <el-button @click="handleCopyReq" type="primary">
+                  复制
+                </el-button>
+              </div>
+            </template>
+            <preview-code :code="reqDef"></preview-code>
+          </detail-item>
+          <detail-item title="请求参数JSON">
+            <template #title>
+              <div class="flex-title">
+                <p>请求参数JSON</p>
+                <el-button @click="handleCopyReqJson" type="primary">
+                  复制
+                </el-button>
+              </div>
+            </template>
+            <preview-code :code="reqJson"></preview-code>
+          </detail-item>
         </section>
-        <section class="section">
+        <!-- <section class="section">
           <detail-item title="响应状态" :inline="false">
             <el-table border :data="responseStatusData">
               <el-table-column label="状态码" prop="status"></el-table-column>
@@ -46,7 +72,7 @@
               ></el-table-column>
             </el-table>
           </detail-item>
-        </section>
+        </section> -->
         <section class="section">
           <detail-item title="响应参数" :inline="false">
             <el-table
@@ -60,38 +86,37 @@
                 label="参数说明"
                 prop="description"
               ></el-table-column>
-              <el-table-column label="类型" prop="dataType"></el-table-column>
+              <el-table-column
+                label="数据类型"
+                prop="dataType"
+              ></el-table-column>
               <el-table-column
                 label="schema"
                 prop="schemaType"
               ></el-table-column>
             </el-table>
           </detail-item>
-        </section>
-        <section class="section">
-          <detail-item title="参数值类型定义">
+          <detail-item title="响应参数类型定义">
             <template #title>
               <div class="flex-title">
-                <p>参数值类型定义</p>
-                <el-button @click="handleCopyReq" type="primary">
-                  复制
-                </el-button>
-              </div>
-            </template>
-            <preview-code :code="reqDef"></preview-code>
-          </detail-item>
-        </section>
-        <section class="section">
-          <detail-item title="返回值类型定义">
-            <template #title>
-              <div class="flex-title">
-                <p>返回值类型定义</p>
+                <p>响应参数类型定义</p>
                 <el-button @click="handleCopyRes" type="primary">
                   复制
                 </el-button>
               </div>
             </template>
             <preview-code :code="resDef"></preview-code>
+          </detail-item>
+          <detail-item title="响应参数JSON">
+            <template #title>
+              <div class="flex-title">
+                <p>响应参数JSON</p>
+                <el-button @click="handleCopyResJson" type="primary">
+                  复制
+                </el-button>
+              </div>
+            </template>
+            <preview-code :code="resJson"></preview-code>
           </detail-item>
         </section>
       </detail>
@@ -113,6 +138,7 @@ import PreviewCode from "./PreviewCode.vue";
 import { generate } from "../swagger/generator";
 import { useClipboard } from "@vueuse/core";
 import { ElMessage } from "element-plus";
+import convertJsonObjectType from "../swagger/json";
 
 const props = defineProps({
   swaggerRequest: {
@@ -147,6 +173,8 @@ const requestParamsData = computed(() =>
 );
 const resDef = ref("");
 const reqDef = ref("");
+const resJson = ref("");
+const reqJson = ref("");
 watch([() => path.value, () => method.value], () => {
   if (swagger?.value) {
     const result = generate(
@@ -156,6 +184,8 @@ watch([() => path.value, () => method.value], () => {
     );
     reqDef.value = result.reqParams;
     resDef.value = result.resParams;
+    resJson.value = result.resJson;
+    reqJson.value = result.reqJson;
   }
 });
 const { copy: copyRes } = useClipboard({ source: resDef });
@@ -164,9 +194,21 @@ const handleCopyRes = () => {
     ElMessage.success("复制成功");
   });
 };
+const { copy: copyResJson } = useClipboard({ source: resJson });
+const handleCopyResJson = () => {
+  copyResJson().then(() => {
+    ElMessage.success("复制成功");
+  });
+};
 const { copy: copyReq } = useClipboard({ source: reqDef });
 const handleCopyReq = () => {
   copyReq().then(() => {
+    ElMessage.success("复制成功");
+  });
+};
+const { copy: copyReqJson } = useClipboard({ source: reqJson });
+const handleCopyReqJson = () => {
+  copyReqJson().then(() => {
     ElMessage.success("复制成功");
   });
 };

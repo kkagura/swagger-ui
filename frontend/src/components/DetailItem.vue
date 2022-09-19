@@ -56,7 +56,6 @@ const labelWidthStyle = computed(() => {
   if (isInline.value) {
     res["width"] = labelWidth.value ?? DEFAULT_LABEL_WIDTH;
   }
-  console.log(res, "xx");
   return res;
 });
 </script>

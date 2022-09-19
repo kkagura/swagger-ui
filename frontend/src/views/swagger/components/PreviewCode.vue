@@ -3,9 +3,10 @@
     <h2 class="file-name" v-if="name">
       {{ name }}
     </h2>
-    <pre :class="cls" class="code-panel">
-      <code :class="cls" v-html="html"></code>
-    </pre>
+    <pre
+      :class="cls"
+      class="code-panel"
+    ><code :class="cls" v-html="html"></code></pre>
   </div>
 </template>
 <script lang="ts" setup>

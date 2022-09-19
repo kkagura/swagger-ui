@@ -69,12 +69,13 @@ export interface TagGroupItem {
 
 export interface ParamRow {
   name: string;
-  description: string;
+  description?: string;
   requestType?: string;
   required?: boolean;
-  dataType: string;
+  dataType?: string;
   schemaType?: string;
   children?: ParamRow[];
+  where?: string;
 }
 
 export interface ResponeseStatusRow {

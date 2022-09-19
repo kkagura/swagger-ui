@@ -3,7 +3,7 @@ import { removeRef } from "./removeRef";
 import { clearRef, setRef, getDefinitions } from "./store";
 import { convertRefKey, isValidName, nodeType, upperFirst } from "./utils";
 import { transformSchemaObjMap } from "./def";
-import { convertPath } from "./path";
+import convertJsonObjectType from "./json";
 
 export function generate(
   swagger: Swagger,
@@ -14,7 +14,9 @@ export function generate(
   pre(swagger, path, method);
   const request = swagger.paths[path][method];
   let reqParams = "\n",
-    resParams = "\n";
+    resParams = "\n",
+    reqJson = "\n",
+    resJson = "\n";
   if (request) {
     const req = request.parameters.find((item) => item.in === "body");
     if (req) {
@@ -30,6 +32,11 @@ export function generate(
         }
       });
       reqParams += transformSchemaObjMap(defs);
+      reqJson += JSON.stringify(
+        convertJsonObjectType(swagger, "", req.schema),
+        null,
+        2
+      );
     }
     const res = request.responses["200"];
     if (res) {
@@ -45,11 +52,22 @@ export function generate(
         }
       });
       resParams += transformSchemaObjMap(defs);
+      resJson = JSON.stringify(
+        convertJsonObjectType(swagger, "", res.schema),
+        null,
+        2
+      );
     }
   }
+  reqParams += "\n";
+  resParams += "\n";
+  reqJson += "\n";
+  resJson += "\n";
   return {
     reqParams,
     resParams,
+    resJson,
+    reqJson,
   };
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" class="page-layout">
     <el-container>
-      <el-header></el-header>
+      <el-header>{{ swagger?.info.title }}</el-header>
       <el-container>
         <el-aside width="256px">
           <div class="tree-search">
@@ -10,7 +10,7 @@
               placeholder="请输入接口路径或名称"
             ></el-input>
           </div>
-          <el-menu @select="onSelect">
+          <el-menu @select="onSelect" :default-active="defaultIndex">
             <el-sub-menu
               :index="group.name"
               :key="group.name"
@@ -71,7 +71,7 @@ const currentSelectContext = reactive<{
   method?: string;
 }>({});
 
-const onSelect = (index: string, indexPath: string[], item: RequestMenu) => {
+const onSelect = (index: string) => {
   const [path, method] = splitPathId(index);
   const request = swagger.value?.paths[path]?.[method];
   if (request) {
@@ -79,6 +79,7 @@ const onSelect = (index: string, indexPath: string[], item: RequestMenu) => {
     currentSelectContext.method = method;
     currentSelectContext.path = path;
   }
+  location.hash = index;
 };
 
 const rawSearchKey = ref("");
@@ -93,7 +94,7 @@ const filteredMenus = computed(() => filterMenu(menus.value, searchKey.value));
 
 const fetch = () => {
   loading.value = true;
-  getSwaggerDoc(route.params.id as string)
+  return getSwaggerDoc(route.params.id as string)
     .then((data) => {
       swagger.value = data;
       menus.value = createMenus(data);
@@ -102,8 +103,14 @@ const fetch = () => {
       loading.value = false;
     });
 };
+const defaultIndex = ref("");
 const onInit = () => {
-  fetch();
+  fetch().then(() => {
+    if (location.hash) {
+      onSelect(location.hash.substring(1));
+      defaultIndex.value = location.hash.substring(1);
+    }
+  });
 };
 onInit();
 </script>
@@ -115,6 +122,8 @@ onInit();
   background-color: #f5f7fb;
   .el-header {
     background-color: #4887bd;
+    line-height: 60px;
+    font-size: 20px;
   }
   .el-main {
     height: calc(100vh - 60px);
@@ -122,6 +131,10 @@ onInit();
   .el-aside {
     height: calc(100vh - 60px);
     overflow-y: auto;
+    .tree-search {
+      padding: 8px 4px;
+      background-color: #fff;
+    }
   }
   :deep(.el-menu-item) {
     .path-method {

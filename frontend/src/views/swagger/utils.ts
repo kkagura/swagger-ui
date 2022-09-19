@@ -111,9 +111,20 @@ export function createRequestParamsData(
 ) {
   const data: ParamRow[] = [];
   requestData.parameters.forEach((param) => {
-    if (param.name === "req") {
-      data.push(...expandSchema(param.schema, swagger));
+    const item: ParamRow = {
+      name: param.name,
+      description: param.description,
+      dataType: param.type || param.schema?.type || "object",
+      required: param.required,
+      where: param.in,
+    };
+    if (param.schema) {
+      item.children = expandSchema(param.schema, swagger);
     }
+    data.push(item);
+    // if (param.name === "req") {
+    //   data.push(...expandSchema(param.schema, swagger));
+    // }
   });
   return data;
 }
