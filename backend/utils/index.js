@@ -11,3 +11,7 @@ exports.request = function fetch(url) {
     });
   });
 };
+
+exports.isInt = function (num) {
+  return parseInt(num) === parseFloat(num);
+};

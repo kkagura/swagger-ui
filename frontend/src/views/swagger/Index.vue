@@ -1,7 +1,7 @@
 <template>
-  <div class="page-layout">
+  <div v-loading="loading" class="page-layout">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header></el-header>
       <el-container>
         <el-aside width="256px">
           <div class="tree-search">
@@ -29,7 +29,7 @@
                 <span :class="`path-method path-method__${requestMenu.method}`">
                   {{ requestMenu.method.toUpperCase() }}
                 </span>
-                <span>
+                <span :title="requestMenu.name" class="path-name">
                   {{ requestMenu.name }}
                 </span>
               </el-menu-item>
@@ -57,6 +57,7 @@ import RequestPanel from "./components/RequestPanel.vue";
 import { useDebounceFn } from "@vueuse/core";
 import { getSwaggerDoc } from "../../api/swagger";
 import { useRoute } from "vue-router";
+const loading = ref(false);
 const route = useRoute();
 
 // store
@@ -91,18 +92,30 @@ watch(() => rawSearchKey.value, syncSearchKey);
 const filteredMenus = computed(() => filterMenu(menus.value, searchKey.value));
 
 const fetch = () => {
-  getSwaggerDoc(route.params.id as string).then((data) => {
-    swagger.value = data;
-    menus.value = createMenus(data);
-  });
+  loading.value = true;
+  getSwaggerDoc(route.params.id as string)
+    .then((data) => {
+      swagger.value = data;
+      menus.value = createMenus(data);
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
-fetch();
+const onInit = () => {
+  fetch();
+};
+onInit();
 </script>
 <style scoped lang="less">
 .page-layout {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: #f5f7fb;
+  .el-header {
+    background-color: #4887bd;
+  }
   .el-main {
     height: calc(100vh - 60px);
   }
@@ -125,6 +138,12 @@ fetch();
       &__delete {
         color: #f93e3e;
       }
+    }
+    .path-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: calc(100% - 76px);
     }
   }
 }

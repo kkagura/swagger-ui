@@ -25,7 +25,6 @@ exports.attributes = {
   path: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
   tag: {
     type: DataTypes.STRING,

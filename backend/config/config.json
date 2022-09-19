@@ -8,7 +8,7 @@
     "user": "root",
     "password": "Wj531096404",
     "database": "swagger_ui",
-    "showSql": false,
+    "showSql": true,
     "isSync": true,
     "isForce": false
   }

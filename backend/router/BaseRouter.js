@@ -51,7 +51,6 @@ module.exports = class BaseRouter {
   }
   findAll(service) {
     return async (ctx, next) => {
-      console.log("xxxx");
       const res = await service.findAll(ctx.request.body);
       ctx.success(res);
     };

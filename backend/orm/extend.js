@@ -1,12 +1,30 @@
+const { Op } = require("sequelize");
+
 module.exports = function extend(orm) {
   const extendMethods = {
     get(where) {
       return orm.findOne({ where });
     },
-    async getList({ page = 1, pageSize = 10, where = {}, like = {} }) {
+    async getList({
+      page = 1,
+      pageSize = 10,
+      where = {},
+      include,
+      through,
+      order = [["createdAt", "DESC"]],
+    }) {
       const offset = (page - 1) * pageSize;
-      const records = await orm.findAll({ limit: pageSize, offset, where });
-      const total = await orm.count({ where });
+      const records = await orm.findAll({
+        limit: pageSize,
+        offset,
+        where,
+        include,
+        through,
+        order,
+      });
+      const total = await orm.count({
+        where,
+      });
       return {
         page,
         pageSize,
@@ -15,7 +33,7 @@ module.exports = function extend(orm) {
       };
     },
     delete(where, t) {
-      return orm.destory({ where }, { transaction: t }).then(() => "ok");
+      return orm.destroy({ where }, { transaction: t }).then(() => "ok");
     },
     add(data, t) {
       return orm.create(data, { transaction: t });

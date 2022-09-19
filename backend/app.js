@@ -2,6 +2,7 @@ const Koa = require("koa");
 const routes = require("./router");
 const cors = require("koa2-cors");
 const koaBody = require("koa-body");
+const { isInt } = require("./utils");
 const app = new Koa();
 
 app.use(async (ctx, next) => {
@@ -9,8 +10,8 @@ app.use(async (ctx, next) => {
     await next();
   } catch (error) {
     console.log(error);
-    const code = error.code || 1;
-    const message = error.message || "服务器错误";
+    const code = error.code || 500;
+    const message = isInt(error.code) ? error.message : "服务器错误";
     ctx.body = { code, message, success: false };
   }
 });

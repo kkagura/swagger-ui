@@ -30,9 +30,12 @@ class BaseService {
       return this.orm.extend.add(params, t);
     });
   }
-  update(params) {
+  update(params, where) {
     return this.transaction((t) => {
-      return this.orm.extend.update(params, t);
+      if (!where) {
+        where = { id: params.id };
+      }
+      return this.orm.extend.update(params, where, t);
     });
   }
   delete(params) {

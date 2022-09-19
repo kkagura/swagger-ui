@@ -67,7 +67,11 @@ export function filterMenu(menu: TagGroupItem[], key: string): TagGroupItem[] {
           (child) => child.name.includes(key) || child.path.includes(key)
         )
       ) {
-        result.push(item);
+        const copyItem = JSON.parse(JSON.stringify(item));
+        copyItem.children = children.filter(
+          (child) => child.name.includes(key) || child.path.includes(key)
+        );
+        result.push(copyItem);
       }
     }
   });
@@ -98,14 +102,21 @@ export function createResponseParamsData(
   const data: ParamRow[] = [];
   const response = requestData.responses["200"];
   data.push(...expandSchema(response.schema, swagger));
-  console.log(data);
   return data;
 }
 
 export function createRequestParamsData(
   requestData: SwaggerRequest,
   swagger: Swagger
-) {}
+) {
+  const data: ParamRow[] = [];
+  requestData.parameters.forEach((param) => {
+    if (param.name === "req") {
+      data.push(...expandSchema(param.schema, swagger));
+    }
+  });
+  return data;
+}
 
 export function expandSchema(
   schema: ObjectScheme,

@@ -1,21 +1,25 @@
 <template>
-  <el-dialog @open="handleOpen" v-model="visible">
-    <el-form :model="detailData" :rules="rules" label-width="100px">
+  <el-dialog @open="handleOpen" destroy-on-close v-model="visible">
+    <el-form
+      ref="formRef"
+      :model="detailData"
+      :rules="rules"
+      label-width="100px"
+    >
       <el-form-item prop="name" label="名称">
         <el-input v-model="detailData.name"></el-input>
       </el-form-item>
       <el-form-item prop="path" label="文档源">
         <el-input v-model="detailData.path"></el-input>
       </el-form-item>
-      <el-form-item prop="tag" label="分组">
+      <el-form-item prop="groupId" label="分组">
         <div class="flex">
-          <el-select>
-            <el-select-option
-              v-model="detailData.groupId"
+          <el-select v-model="detailData.groupId">
+            <el-option
               v-for="group in groups"
               :label="group.name"
               :value="group.id"
-            ></el-select-option>
+            ></el-option>
           </el-select>
           <el-button @click="handleAddGroup" type="primary">增加分组</el-button>
         </div>
@@ -28,9 +32,14 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { computed, ref } from "vue";
-import { SwaggerRecord, addSwaggerConfig } from "../../../api/swagger";
+import {
+  SwaggerRecord,
+  addSwaggerConfig,
+  getSwaggerDetail,
+  updateSwaggerConfig,
+} from "../../../api/swagger";
 import {
   addSwaggerGroup,
   fetchSwaggerGroupList,
@@ -55,7 +64,7 @@ const detailData = ref<SwaggerRecord>({ ...emptyData });
 const rules = {
   name: [{ required: true, message: "请输入文档名称" }],
   path: [{ required: true, message: "请输入文档源" }],
-  tag: [{ required: true, message: "请选择文档分组" }],
+  groupId: [{ required: true, message: "请选择文档分组" }],
 };
 
 const emit = defineEmits(["update:modelValue", "success"]);
@@ -65,14 +74,29 @@ const visible = computed({
 });
 
 const handleOpen = () => {
-  detailData.value = {
-    ...emptyData,
-  };
+  if (props.id) {
+    getSwaggerDetail(props.id).then((res) => {
+      detailData.value = {
+        ...res,
+      };
+    });
+  } else {
+    detailData.value = {
+      ...emptyData,
+    };
+  }
 };
-const handleConfirm = () => {
-  addSwaggerConfig(detailData.value).then(() => {
-    emit("success");
-  });
+
+const formRef = ref();
+const handleConfirm = async () => {
+  await formRef.value.validate();
+  if (props.id) {
+    await updateSwaggerConfig(detailData.value);
+  } else {
+    await addSwaggerConfig(detailData.value);
+  }
+  ElMessage.success("操作成功");
+  emit("success");
 };
 const groups = ref<{ name: string; id: string }[]>([]);
 
