@@ -1,7 +1,6 @@
 import { addDefinition, getRef } from "./store.js";
 import {
   convertRefKey,
-  isIdKey,
   isValidName,
   nodeType,
   ParsedSimpleValue,
@@ -44,13 +43,7 @@ export function transformSchemaObj(node: any, k: string = ""): string {
       break;
     }
     case "string":
-    case "number": {
-      type = nodeType(node);
-      if (isIdKey(k)) {
-        type = 'number | ""';
-      }
-      break;
-    }
+    case "number":
     case "boolean":
     case "unknown": {
       type = nodeType(node);
