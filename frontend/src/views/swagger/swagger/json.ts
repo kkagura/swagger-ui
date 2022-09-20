@@ -1,5 +1,5 @@
 import Swagger, { ObjectScheme } from "../";
-import { convertRefKey } from "./utils.js";
+import { convertRefKey, isIdKey } from "./utils.js";
 
 export default function convertJsonObjectType(
   swagger: Swagger,
@@ -22,6 +22,9 @@ export default function convertJsonObjectType(
     value.type == "double" ||
     value.type == "long"
   ) {
+    if (isIdKey(key)) {
+      return "";
+    }
     return 0;
   } else if (value.type == "boolean") {
     return false;

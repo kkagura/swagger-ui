@@ -32,11 +32,8 @@ export function generate(
         }
       });
       reqParams += transformSchemaObjMap(defs);
-      reqJson += JSON.stringify(
-        convertJsonObjectType(swagger, "", req.schema),
-        null,
-        2
-      );
+      const json = convertJsonObjectType(swagger, "", req.schema);
+      reqJson += json ? JSON.stringify(json, null, 2) : "\n";
     }
     const res = request.responses["200"];
     if (res) {
@@ -52,11 +49,8 @@ export function generate(
         }
       });
       resParams += transformSchemaObjMap(defs);
-      resJson = JSON.stringify(
-        convertJsonObjectType(swagger, "", res.schema),
-        null,
-        2
-      );
+      const json = convertJsonObjectType(swagger, "", res.schema);
+      resJson = json ? JSON.stringify(json, null, 2) : "\n";
     }
   }
   reqParams += "\n";

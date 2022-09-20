@@ -148,3 +148,7 @@ export function collectRefType(value: ObjectScheme) {
     return pre;
   }, [] as string[]);
 }
+
+export function isIdKey(k: string) {
+  return k.endsWith("Id") || k === "id";
+}

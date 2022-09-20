@@ -1,6 +1,7 @@
 import { addDefinition, getRef } from "./store.js";
 import {
   convertRefKey,
+  isIdKey,
   isValidName,
   nodeType,
   ParsedSimpleValue,
@@ -25,13 +26,13 @@ export function transformSchemaObjMap(
         ? `export type ${isValidName(k) ? k : getRef(k)} = `
         : `export interface ${isValidName(k) ? k : getRef(k)} `
       : `  ${k}: `;
-    output += transformSchemaObj(v);
+    output += transformSchemaObj(v, k);
     output += "\n";
   });
   return output;
 }
 
-export function transformSchemaObj(node: any): string {
+export function transformSchemaObj(node: any, k: string = ""): string {
   let type = "";
   switch (nodeType(node)) {
     case "ref": {
@@ -43,7 +44,13 @@ export function transformSchemaObj(node: any): string {
       break;
     }
     case "string":
-    case "number":
+    case "number": {
+      type = nodeType(node);
+      if (isIdKey(k)) {
+        type = 'number | ""';
+      }
+      break;
+    }
     case "boolean":
     case "unknown": {
       type = nodeType(node);
